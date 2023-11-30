@@ -22,3 +22,6 @@ roslaunch ros_dashboard_backend ros_dashboard_backend.launch
 ```
 
 4. The app will run at all interfaces (0.0.0.0) on port 5000.
+
+## Postman
+Postman collection and environment filees are provided to test the HTTP REST API using Postman.

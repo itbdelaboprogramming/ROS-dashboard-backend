@@ -9,32 +9,42 @@ rosnodejs.initNode('/backend_node');
 const SetMapping = rosnodejs.require('slam_itbdelabo').srv.SetMapping;
 const std_msgs = rosnodejs.require('std_msgs').msg;
 const nh = rosnodejs.nh;
-const sub = nh.subscribe('/chatter', 'std_msgs/String', (msg) => {
-    console.log('Got msg on chatter: %j', msg);
-});
-const pub = nh.advertise('/chatter', 'std_msgs/String');
+
 let setMappingSrv = nh.serviceClient('/set_mapping', 'slam_itbdelabo/SetMapping');
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 
 app.get('/', (req, res) => {
-    // pub.publish({ data: "Hello ros from http nodejs"});
     res.status(200).json({ success: true, data: "ROS Dashboard Backend API"});
 });
 
 app.post('/api/mapping', (req, res) => {
     const {start, pause, stop} = req.body;
-    let setMappingReq = new SetMapping.Request();
-    setMappingReq.start = start, setMappingReq.pause = pause, setMappingReq.stop = stop;
-    setMappingSrv.call(setMappingReq).then((setMappingRes) => {
-        if (setMappingRes.success) {
-            res.status(200).json({ success: true, msg: "Mapping request success"});
-        }
-        else {
-            res.status(502).json({ success: false, msg: "Mapping request failed"});
-        }
-    });
+    if (start + pause + stop <= 1) {
+        nh.waitForService('/set_mapping', 2000) // wait for ROS Service availability (timeout 2 seconds)
+            .then((available) => {
+                if (available) {
+                    let setMappingReq = new SetMapping.Request();
+                    setMappingReq.start = start, setMappingReq.pause = pause, setMappingReq.stop = stop;
+                    setMappingSrv.call(setMappingReq).then((setMappingRes) => {
+                        if (setMappingRes.success) {
+                            res.status(200).json({ success: true, msg: "Mapping request success"});
+                        }
+                        else {
+                            res.status(400).json({success: false, msg: "Invalid request, only one action can be set"});
+                        }
+                    });
+                }
+                else {
+                    res.status(503).json({success: false, msg: "ROS Service is not available"});
+                }
+            });
+    }
+    else {
+        res.status(400).json({success: false, msg: "Invalid request, only one action can be set"});
+    }
+
 })
 
 app.listen(PORT,"0.0.0.0", () => console.log(`REST API HTTP Server running at 0.0.0.0:${PORT}`));
