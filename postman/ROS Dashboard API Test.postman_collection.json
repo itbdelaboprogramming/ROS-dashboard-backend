@@ -1,0 +1,55 @@
+{
+	"info": {
+		"_postman_id": "1feb49bb-0949-4d2b-bb98-e2c9ef94609f",
+		"name": "ROS Dashboard API Test",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "29751539"
+	},
+	"item": [
+		{
+			"name": "Home Page API",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000"
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Set Mapping API",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"start\" : true,\n    \"pause\" : false,\n    \"stop\" : false\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/mapping",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"mapping"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

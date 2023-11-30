@@ -1,0 +1,3 @@
+<launch>
+    <node pkg="ros_dashboard_backend" type="backend_node" name="backend_node" output="screen"> </node>
+</launch>
