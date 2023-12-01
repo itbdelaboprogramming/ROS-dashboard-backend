@@ -8,20 +8,25 @@ git clone https://github.com/itbdelaboprogramming/ROS-dashboard-backend.git
 cd ~/catkin_ws
 catkin_make
 ```
-
-2. Install dependencies (Node.js v18.18.2)
+2. Fill MySQL authentication
+```bash
+cd ~/catkin_ws/src/ROS-dashboard-backend/scripts
+nano backend_node
+# Fill the MySQL authentication
+```
+3. Install dependencies (Node.js v18.18.2)
 ```bash
 cd ~/catkin_ws/src/ROS-dashboard-backend
 npm install
 ```
 
-3. Run
+4. Run
 ```bash
 cd ~/catkin_ws
 roslaunch ros_dashboard_backend ros_dashboard_backend.launch
 ```
 
-4. The app will run at all interfaces (0.0.0.0) on port 5000.
+5. The app will run at all interfaces (0.0.0.0) on port 5000.
 
 ## Postman
 Postman collection and environment filees are provided to test the HTTP REST API using Postman.

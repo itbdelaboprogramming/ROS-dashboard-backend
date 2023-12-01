@@ -50,6 +50,46 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Get All pgm Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/pgm_data",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"pgm_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get All yaml Data",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/pgm_data",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"pgm_data"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
