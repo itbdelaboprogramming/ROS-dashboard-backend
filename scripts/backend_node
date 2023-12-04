@@ -64,6 +64,15 @@ app.post('/api/mapping', (req, res) => {
 app.get('/api/pgm_data', (req, res) => {
     conn.query('SELECT * FROM pgm_data', (err, rows, fields) => {
         if (!err) {
+            // save pgm data to file, change file path accordingly
+            // var fs = require('fs');
+            // const decodedData = Buffer.from(rows[7].data, 'base64');
+            // output_file_path = "/home/<user>/catkin_ws/src/ROS-dashboard-backend/map.pgm";
+            // fs.writeFile(output_file_path, decodedData, (err) => {
+            //     if (err) {throw err;}
+            //     console.log('The pgm file has been saved!');
+            // });
+
             res.status(200).json({success: true, data: rows});
         }
         else {
@@ -75,6 +84,16 @@ app.get('/api/pgm_data', (req, res) => {
 app.get('/api/yaml_data', (req, res) => {
     conn.query('SELECT * FROM yaml_data', (err, rows, fields) => {
         if (!err) {
+            // save yaml data to file, change file path accordingly
+            // const yaml = require('js-yaml');
+            // const parsedYaml = yaml.load(rows[1].data, 'utf8');
+            // var fs = require('fs');
+            // output_file_path = "/home/<user>/catkin_ws/src/ROS-dashboard-backend/map.yaml";
+            // fs.writeFile(output_file_path, yaml.dump(parsedYaml, { indent: 2 }), (err) => {
+            //     if (err) {throw err;}
+            //     console.log('The yaml file has been saved!');
+            // });
+
             res.status(200).json({success: true, data: rows});
         }
         else {
@@ -83,4 +102,4 @@ app.get('/api/yaml_data', (req, res) => {
     })
 });
 
-app.listen(PORT,"0.0.0.0", () => console.log(`REST API HTTP Server running at 0.0.0.0:${PORT}`));
+app.listen(PORT,"0.0.0.0", () => console.log(`ROS Dashboard API is running at 0.0.0.0:${PORT}`));
