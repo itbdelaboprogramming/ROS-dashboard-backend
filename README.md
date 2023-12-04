@@ -22,7 +22,7 @@ exit
 ```bash
 mysql -u root -p
 # enter root password, in this case from previous step is 'root'
-
+# enter these commands, ONE BY ONE separated by ";" (without quotes)
 CREATE USER 'your_username'@'ip_zerotier' IDENTIFIED BY 'your_password';
 GRANT ALL PRIVILEGES ON *.* TO 'your_username'@'ip_zerotier' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
@@ -35,13 +35,17 @@ exit
 ```bash
 mysql -u root -p
 # enter root password, in this case from previous step is 'root'
-# copy all the commands from sql/init.sql ONE BY ONE
+# copy all the commands from sql/init.sql ONE BY ONE separated by ";" (without quotes)
 ```
 5. Fill MySQL authentication
 ```bash
 cd ~/catkin_ws/src/ROS-dashboard-backend/scripts
 nano backend_node
 # Fill the MySQL authentication
+host: "localhost",
+user: "root",
+password: "root",
+database : "ROS_DB"
 ```
 6. Install dependencies (Node.js v18.18.2)
 ```bash
