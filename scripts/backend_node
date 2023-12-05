@@ -35,30 +35,32 @@ app.get('/', (req, res) => {
 
 app.post('/api/mapping', (req, res) => {
     const {start, pause, stop} = req.body;
-    if (start + pause + stop <= 1) {
-        nh.waitForService('/set_mapping', 2000) // wait for ROS Service availability (timeout 2 seconds)
-            .then((available) => {
-                if (available) {
-                    let setMappingReq = new SetMapping.Request();
-                    setMappingReq.start = start, setMappingReq.pause = pause, setMappingReq.stop = stop;
-                    setMappingSrv.call(setMappingReq).then((setMappingRes) => {
-                        if (setMappingRes.success) {
-                            res.status(200).json({ success: true, msg: "Mapping request success"});
+    nh.waitForService('/set_mapping', 2000) // wait for ROS Service availability (timeout 2 seconds)
+        .then((available) => {
+            if (available) {
+                let setMappingReq = new SetMapping.Request();
+                setMappingReq.start = start, setMappingReq.pause = pause, setMappingReq.stop = stop;
+                setMappingSrv.call(setMappingReq).then((setMappingRes) => {
+                    if (setMappingRes.success) {
+                        res.status(200).json({ success: true, msg: "Mapping request success"});
+                    }
+                    else {
+                        if (setMappingRes.code === 1) {
+                            res.status(503).json({success: false, msg: "/map topic is not available"})
                         }
-                        else {
+                        else if (setMappingRes.code === 2){
                             res.status(400).json({success: false, msg: "Invalid request, only one action can be set"});
                         }
-                    });
-                }
-                else {
-                    res.status(503).json({success: false, msg: "ROS Service is not available"});
-                }
-            });
-    }
-    else {
-        res.status(400).json({success: false, msg: "Invalid request, only one action can be set"});
-    }
-
+                        else {
+                            res.status(500).json({success: false, msg: "Internal server error"})
+                        }
+                    }
+                });
+            }
+            else {
+                res.status(503).json({success: false, msg: "ROS Service is not available"});
+            }
+        });
 })
 
 app.get('/api/pgm_data', (req, res) => {
