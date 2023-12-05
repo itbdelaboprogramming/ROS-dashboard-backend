@@ -18,7 +18,7 @@ FLUSH PRIVILEGES;
 exit
 ```
 
-3. (Optional) set user for remote password through zerotier
+3. (Optional) set user and password remote access through zerotier
 ```bash
 mysql -u root -p
 # enter root password, in this case from previous step is 'root'
