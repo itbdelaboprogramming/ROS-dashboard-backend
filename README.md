@@ -18,8 +18,16 @@ FLUSH PRIVILEGES;
 exit
 ```
 
-3. (Optional) set user and password remote access through zerotier
+3. Set user and password for remote access from Jetson through zerotier
 ```bash
+# expose mysql to all network interfaces
+sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+# find bind-address and add another bind-address = "0.0.0.0"
+# save and exit
+ctrl + s
+ctrl + x
+
+# add new accounts for accesss from Jetson/remote pc
 mysql -u root -p
 # enter root password, in this case from previous step is 'root'
 # enter these commands, ONE BY ONE separated by ";" (without quotes)
