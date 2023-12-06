@@ -35,7 +35,8 @@ app.get('/', (req, res) => {
 
 app.post('/api/mapping', (req, res) => {
     const {start, pause, stop} = req.body;
-    nh.waitForService('/set_mapping', 2000) // wait for ROS Service availability (timeout 2 seconds)
+    const timeout = 2000;
+    nh.waitForService('/set_mapping', timeout) // wait for ROS Service availability (timeout 2 seconds)
         .then((available) => {
             if (available) {
                 let setMappingReq = new SetMapping.Request();
@@ -50,6 +51,9 @@ app.post('/api/mapping', (req, res) => {
                         }
                         else if (setMappingRes.code === 2){
                             res.status(400).json({success: false, msg: "Invalid request, only one action can be set"});
+                        }
+                        else if (setMappingRes.code === 3){
+                            res.status(504).json({success: false, msg: "Map failed to save"})
                         }
                         else {
                             res.status(500).json({success: false, msg: "Internal server error"})
