@@ -78,17 +78,28 @@ app.post('/api/mapping', (req, res) => {
 })
 
 app.post('/api/lidar', (req, res) => {
-    const {enable} = req.body;
+    const {enable, use_own_map} = req.body;
     if (enable) {
-        const commandToExecute = 'roslaunch slam_itbdelabo compute_slam.launch';
+        let commandToExecute = '';
+        if (enable && !use_own_map) {
+            commandToExecute = 'roslaunch slam_itbdelabo compute_slam.launch';
+        }
+        else if (enable && use_own_map) {
+            commandToExecute = 'roslaunch slam_itbdelabo compute_slam.launch use_own_map:=true';
+        }
         roslaunch_child = spawn(commandToExecute, {shell: true});
         res.status(200).json({success: true, msg: "Lidar enabled"});
     }
     else {
-        psTree(roslaunch_child.pid, function (err, children) {
-            spawn('kill', ['-9'].concat(children.map(function (p) { return p.PID })));
-        });
-        res.status(200).json({success: true, msg: "Lidar disabled"});
+        if (roslaunch_child === undefined) {
+            res.status(200).json({success: true, msg: "Lidar disabled"});
+        }
+        else {
+            psTree(roslaunch_child.pid, function (err, children) {
+                spawn('kill', ['-9'].concat(children.map(function (p) { return p.PID })));
+            });
+            res.status(200).json({success: true, msg: "Lidar disabled"});
+        }
     }
 })
 

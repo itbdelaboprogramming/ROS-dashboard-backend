@@ -101,7 +101,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"enable\": true\n}",
+					"raw": "{\n    \"enable\": true,\n    \"use_own_map\": false\n}",
 					"options": {
 						"raw": {
 							"language": "json"
