@@ -122,6 +122,35 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Set Own Map API",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"enable\": true,\n    \"map_name\": \"2023-12-06_10-12-50.pgm\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/set_own_map",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"set_own_map"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }

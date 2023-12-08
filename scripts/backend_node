@@ -11,12 +11,14 @@ var psTree = require('ps-tree');
 
 rosnodejs.initNode('/backend_node');
 const SetMapping = rosnodejs.require('slam_itbdelabo').srv.SetMapping;
+const SetOwnMap = rosnodejs.require('slam_itbdelabo').srv.SetOwnMap;
 const std_msgs = rosnodejs.require('std_msgs').msg;
 const nh = rosnodejs.nh;
 
 let roslaunch_child = undefined;
 
 let setMappingSrv = nh.serviceClient('/set_mapping', 'slam_itbdelabo/SetMapping');
+let setOwnMapSrv = nh.serviceClient('/set_own_map', 'slam_itbdelabo/SetOwnMap')
 
 var conn = mysql.createConnection({
     host: "",
@@ -90,8 +92,31 @@ app.post('/api/lidar', (req, res) => {
     }
 })
 
+app.post('/api/set_own_map', (req, res) => {
+    const {enable, map_name} = req.body;
+    const timeout = 2000;
+    nh.waitForService('/set_own_map', timeout) // wait for ROS Service availability (timeout 2 seconds)
+        .then((available) => {
+            if (available) {
+                let setOwnMapReq = new SetOwnMap.Request();
+                setOwnMapReq.enable = enable, setOwnMapReq.map_name = map_name;
+                setOwnMapSrv.call(setOwnMapReq).then((setOwnMapRes) => {
+                    if (setOwnMapRes.success) {
+                        res.status(200).json({ success: true, msg: "Set own map request success"});
+                    }
+                    else {
+                        res.status(500).json({success: false, msg: "Internal rosservice error"})
+                    }
+                })
+            }
+            else {
+                res.status(503).json({success: false, msg: "ROS Service is not available"});
+            }
+        });
+})
+
 app.get('/api/pgm_data', (req, res) => {
-    conn.query('SELECT * FROM pgm_data', (err, rows, fields) => {
+    conn.query('SELECT map_name, modified_time, file_type, file_size FROM pgm_data', (err, rows, fields) => {
         if (!err) {
             // save pgm data to file, change file path accordingly
             // var fs = require('fs');
@@ -111,7 +136,7 @@ app.get('/api/pgm_data', (req, res) => {
 });
 
 app.get('/api/yaml_data', (req, res) => {
-    conn.query('SELECT * FROM yaml_data', (err, rows, fields) => {
+    conn.query('SELECT file_name, modified_time, file_type, file_size FROM yaml_data', (err, rows, fields) => {
         if (!err) {
             // save yaml data to file, change file path accordingly
             // const yaml = require('js-yaml');
