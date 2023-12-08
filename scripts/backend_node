@@ -6,11 +6,15 @@ const app = express();
 var mysql = require('mysql');
 const PORT = process.env.PORT || 5000;
 const rosnodejs = require('rosnodejs');
+const { exec, spawn } = require('child_process');
+var psTree = require('ps-tree');
 
 rosnodejs.initNode('/backend_node');
 const SetMapping = rosnodejs.require('slam_itbdelabo').srv.SetMapping;
 const std_msgs = rosnodejs.require('std_msgs').msg;
 const nh = rosnodejs.nh;
+
+let roslaunch_child = undefined;
 
 let setMappingSrv = nh.serviceClient('/set_mapping', 'slam_itbdelabo/SetMapping');
 
@@ -69,6 +73,21 @@ app.post('/api/mapping', (req, res) => {
                 res.status(503).json({success: false, msg: "ROS Service is not available"});
             }
         });
+})
+
+app.post('/api/lidar', (req, res) => {
+    const {enable} = req.body;
+    if (enable) {
+        const commandToExecute = 'roslaunch slam_itbdelabo compute_slam.launch';
+        roslaunch_child = spawn(commandToExecute, {shell: true});
+        res.status(200).json({success: true, msg: "Lidar enabled"});
+    }
+    else {
+        psTree(roslaunch_child.pid, function (err, children) {
+            spawn('kill', ['-9'].concat(children.map(function (p) { return p.PID })));
+        });
+        res.status(200).json({success: true, msg: "Lidar disabled"});
+    }
 })
 
 app.get('/api/pgm_data', (req, res) => {
