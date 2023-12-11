@@ -35,8 +35,8 @@ ctrl + x
 mysql -u root -p
 # enter root password, in this case from previous step is 'root'
 # enter these commands, ONE BY ONE separated by ";" (without quotes)
-CREATE USER 'your_username'@'ip_zerotier' IDENTIFIED BY 'your_password';
-GRANT ALL PRIVILEGES ON *.* TO 'your_username'@'ip_zerotier' WITH GRANT OPTION;
+CREATE USER 'jetson_username'@'jetson_zerotier_ip_address' IDENTIFIED BY 'jetson_password';
+GRANT ALL PRIVILEGES ON *.* TO 'jetson_username'@'jetson_zerotier_ip_address' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 exit
 
