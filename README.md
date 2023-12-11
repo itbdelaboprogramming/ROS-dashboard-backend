@@ -1,7 +1,11 @@
 # ROS Dashboard Backend
 
+Backend service for ROS Dashboard. This service is responsible for handling HTTP REST API requests from the frontend and also handling ROS communication with the robot.
+
 ## Installation
-1. Clone the repository. Please make sure that catkin_ws directory is already prepared. Also make sure Node.js is installed. Version that is used for development is v18.18.2. If there are issues, refer to this version (v18.18.2).
+1. The backend application requires some application from SLAM_ITBdeLabo ROS Package. Please install SLAM_ITBdeLabo ros pacakge first. Refer to this [link](https://github.com/itbdelaboprogramming/SLAM_ITBdeLabo) for installation guide.
+
+2. Clone the repository. Please make sure that catkin_ws directory is already prepared. Also make sure Node.js is installed. Version that is used for development is v18.18.2. If there are issues, refer to this version (v18.18.2).
 ```bash
 cd ~/catkin_ws/src
 git clone https://github.com/itbdelaboprogramming/ROS-dashboard-backend.git
@@ -9,7 +13,7 @@ cd ~/catkin_ws
 catkin_make
 ```
 
-2. Install MySQL server and set root password
+3. Install MySQL server and set root password
 ```bash
 sudo apt install mysql-server
 sudo mysql
@@ -18,7 +22,7 @@ FLUSH PRIVILEGES;
 exit
 ```
 
-3. Set user and password for remote access from Jetson through zerotier
+4. Set user and password for remote access from Jetson through zerotier
 ```bash
 # expose mysql to all network interfaces
 sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
@@ -39,13 +43,13 @@ exit
 # now that user can access the database from remote/other pc assigned with that IP address.
 ```
 
-4. Prepare database
+5. Prepare database
 ```bash
 mysql -u root -p
 # enter root password, in this case from previous step is 'root'
 # copy all the commands from sql/init.sql ONE BY ONE separated by ";" (without quotes)
 ```
-5. Fill MySQL authentication
+6. Fill MySQL authentication
 ```bash
 cd ~/catkin_ws/src/ROS-dashboard-backend/scripts
 nano backend_node
@@ -55,19 +59,19 @@ user: "root",
 password: "root",
 database : "ROS_DB"
 ```
-6. Install dependencies (Node.js v18.18.2)
+7. Install dependencies (Node.js v18.18.2)
 ```bash
 cd ~/catkin_ws/src/ROS-dashboard-backend
 npm install
 ```
 
-7. Run
+8. Run
 ```bash
 cd ~/catkin_ws
 roslaunch ros_dashboard_backend ros_dashboard_backend.launch
 ```
 
-8. The app will run at all interfaces (0.0.0.0) on port 5000.
+9. The app will run at all interfaces (0.0.0.0) on port 5000.
 
 ## Postman
 Postman collection and environment filees are provided to test the HTTP REST API using Postman.
