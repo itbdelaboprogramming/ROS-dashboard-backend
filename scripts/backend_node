@@ -45,8 +45,8 @@ app.get('/', (req, res) => {
 
 app.post('/api/mapping', (req, res) => {
     const {start, pause, stop} = req.body;
-    const timeout = 2000;
-    nh.waitForService('/set_mapping', timeout) // wait for ROS Service availability (timeout 2 seconds)
+    const timeout = 5000;
+    nh.waitForService('/set_mapping', timeout) // wait for ROS Service availability (timeout 5 seconds)
         .then((available) => {
             if (available) {
                 let setMappingReq = new SetMapping.Request();
@@ -118,8 +118,8 @@ app.post('/api/lidar', (req, res) => {
 
 app.post('/api/set_own_map', (req, res) => {
     const {enable, map_name} = req.body;
-    const timeout = 2000;
-    nh.waitForService('/set_own_map', timeout) // wait for ROS Service availability (timeout 2 seconds)
+    const timeout = 5000;
+    nh.waitForService('/set_own_map', timeout) // wait for ROS Service availability (timeout 5 seconds)
         .then((available) => {
             if (available) {
                 let setOwnMapReq = new SetOwnMap.Request();
