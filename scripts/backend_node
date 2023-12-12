@@ -88,6 +88,19 @@ app.post('/api/lidar', (req, res) => {
             commandToExecute = 'roslaunch slam_itbdelabo compute_slam.launch use_own_map:=true';
         }
         roslaunch_child = spawn(commandToExecute, {shell: true});
+
+        roslaunch_child.stdout.on('data', (data) => {
+            console.log(`${data}`);
+        });
+        
+        roslaunch_child.stderr.on('data', (data) => {
+            console.error(`${data}`);
+        });
+
+        roslaunch_child.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+        });
+        
         res.status(200).json({success: true, msg: "Lidar enabled"});
     }
     else {
