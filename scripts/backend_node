@@ -16,9 +16,10 @@ const std_msgs = rosnodejs.require('std_msgs').msg;
 const nh = rosnodejs.nh;
 
 let roslaunch_child = undefined;
+let map_saver_child = undefined;
+let map_server_child = undefined;
 
 let setMappingSrv = nh.serviceClient('/set_mapping', 'slam_itbdelabo/SetMapping');
-let setOwnMapSrv = nh.serviceClient('/set_own_map', 'slam_itbdelabo/SetOwnMap')
 
 var conn = mysql.createConnection({
     host: "",
@@ -31,7 +32,7 @@ var conn = mysql.createConnection({
     if (err) throw err;
     rosnodejs.log.info("Connected to MySQL Database");
 });
-
+const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
 
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -48,6 +49,31 @@ app.get('/', (req, res) => {
 app.post('/api/mapping', (req, res) => {
     const {start, pause, stop} = req.body;
     const timeout = 5000;
+    if (stop) {
+        const ts = Date.now();
+        const date_ob = new Date(ts);
+        const year = date_ob.getFullYear();
+        const month = date_ob.getMonth() + 1;
+        const date = date_ob.getDate();
+        const hours = date_ob.getHours();
+        const minutes = date_ob.getMinutes();
+        const seconds = date_ob.getSeconds();
+        const map_name = `${year}-${month}-${date}_${hours}-${minutes}-${seconds}`;
+        const commandToExecute = `rosrun map_server map_saver -f ${map_path}/${map_name}`;
+        map_saver_child = spawn(commandToExecute, {shell: true});
+
+        map_saver_child.stdout.on('data', (data) => {
+            console.log(`${data}`);
+        });
+        
+        map_saver_child.stderr.on('data', (data) => {
+            console.error(`${data}`);
+        });
+
+        map_saver_child.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+        });
+    }
     let setMappingReq = new SetMapping.Request();
     setMappingReq.start = start, setMappingReq.pause = pause, setMappingReq.stop = stop;
     setMappingSrv.call(setMappingReq).then((setMappingRes) => {
@@ -114,17 +140,35 @@ app.post('/api/lidar', (req, res) => {
 // Set Own Map API
 app.post('/api/set_own_map', (req, res) => {
     const {enable, map_name} = req.body;
-    const timeout = 5000;
-    let setOwnMapReq = new SetOwnMap.Request();
-    setOwnMapReq.enable = enable, setOwnMapReq.map_name = map_name;
-    setOwnMapSrv.call(setOwnMapReq).then((setOwnMapRes) => {
-        if (setOwnMapRes.success) {
-            res.status(200).json({ success: true, msg: "Set own map request success"});
+    if (enable) {
+        const yaml_file = map_name.replace('.pgm', '.yaml');
+        const commandToExecute = `rosrun map_server map_server ${map_path}/${yaml_file}`;
+        map_server_child = spawn(commandToExecute, {shell: true});
+
+        map_server_child.stdout.on('data', (data) => {
+            console.log(`${data}`);
+        });
+        
+        map_server_child.stderr.on('data', (data) => {
+            console.error(`${data}`);
+        });
+
+        map_server_child.on('close', (code) => {
+            console.log(`child process exited with code ${code}`);
+        });
+        res.status(200).json({success: true, msg: "Enable own map success"});
+    }
+    else {
+        if (map_server_child === undefined) {
+            res.status(200).json({success: true, msg: "Disable own map success"});
         }
         else {
-            res.status(500).json({success: false, msg: "Internal rosservice error"})
+            psTree(map_server_child.pid, function (err, children) {
+                spawn('kill', ['-9'].concat(children.map(function (p) { return p.PID })));
+            });
+            res.status(200).json({success: true, msg: "Disable own map success"});
         }
-    })
+    }
 })
 
 // Get PGM Map Data API
