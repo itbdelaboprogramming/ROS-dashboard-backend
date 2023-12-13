@@ -39,44 +39,39 @@ app.use(cors({
     origin: '*'
 }));
 
+// Home API
 app.get('/', (req, res) => {
     res.status(200).json({ success: true, data: "ROS Dashboard Backend API"});
 });
 
+// Set Mapping API (Start, Pause, Stop)
 app.post('/api/mapping', (req, res) => {
     const {start, pause, stop} = req.body;
     const timeout = 5000;
-    nh.waitForService('/set_mapping', timeout) // wait for ROS Service availability (timeout 5 seconds)
-        .then((available) => {
-            if (available) {
-                let setMappingReq = new SetMapping.Request();
-                setMappingReq.start = start, setMappingReq.pause = pause, setMappingReq.stop = stop;
-                setMappingSrv.call(setMappingReq).then((setMappingRes) => {
-                    if (setMappingRes.success) {
-                        res.status(200).json({ success: true, msg: "Mapping request success"});
-                    }
-                    else {
-                        if (setMappingRes.code === 1) {
-                            res.status(503).json({success: false, msg: "/map topic is not available"})
-                        }
-                        else if (setMappingRes.code === 2){
-                            res.status(400).json({success: false, msg: "Invalid request, only one action can be set"});
-                        }
-                        else if (setMappingRes.code === 3){
-                            res.status(504).json({success: false, msg: "Map failed to save"})
-                        }
-                        else {
-                            res.status(500).json({success: false, msg: "Internal server error"})
-                        }
-                    }
-                });
+    let setMappingReq = new SetMapping.Request();
+    setMappingReq.start = start, setMappingReq.pause = pause, setMappingReq.stop = stop;
+    setMappingSrv.call(setMappingReq).then((setMappingRes) => {
+        if (setMappingRes.success) {
+            res.status(200).json({ success: true, msg: "Mapping request success"});
+        }
+        else {
+            if (setMappingRes.code === 1) {
+                res.status(503).json({success: false, msg: "/map topic is not available"})
+            }
+            else if (setMappingRes.code === 2){
+                res.status(400).json({success: false, msg: "Invalid request, only one action can be set"});
+            }
+            else if (setMappingRes.code === 3){
+                res.status(504).json({success: false, msg: "Map failed to save"})
             }
             else {
-                res.status(503).json({success: false, msg: "ROS Service is not available"});
+                res.status(500).json({success: false, msg: "Internal server error"})
             }
-        });
+        }
+    });
 })
 
+// LIDAR API (Enable, Disable)
 app.post('/api/lidar', (req, res) => {
     const {enable, use_own_map} = req.body;
     if (enable) {
@@ -116,41 +111,26 @@ app.post('/api/lidar', (req, res) => {
     }
 })
 
+// Set Own Map API
 app.post('/api/set_own_map', (req, res) => {
     const {enable, map_name} = req.body;
     const timeout = 5000;
-    nh.waitForService('/set_own_map', timeout) // wait for ROS Service availability (timeout 5 seconds)
-        .then((available) => {
-            if (available) {
-                let setOwnMapReq = new SetOwnMap.Request();
-                setOwnMapReq.enable = enable, setOwnMapReq.map_name = map_name;
-                setOwnMapSrv.call(setOwnMapReq).then((setOwnMapRes) => {
-                    if (setOwnMapRes.success) {
-                        res.status(200).json({ success: true, msg: "Set own map request success"});
-                    }
-                    else {
-                        res.status(500).json({success: false, msg: "Internal rosservice error"})
-                    }
-                })
-            }
-            else {
-                res.status(503).json({success: false, msg: "ROS Service is not available"});
-            }
-        });
+    let setOwnMapReq = new SetOwnMap.Request();
+    setOwnMapReq.enable = enable, setOwnMapReq.map_name = map_name;
+    setOwnMapSrv.call(setOwnMapReq).then((setOwnMapRes) => {
+        if (setOwnMapRes.success) {
+            res.status(200).json({ success: true, msg: "Set own map request success"});
+        }
+        else {
+            res.status(500).json({success: false, msg: "Internal rosservice error"})
+        }
+    })
 })
 
+// Get PGM Map Data API
 app.get('/api/pgm_data', (req, res) => {
     conn.query('SELECT map_name, modified_time, file_type, file_size FROM pgm_data', (err, rows, fields) => {
         if (!err) {
-            // save pgm data to file, change file path accordingly
-            // var fs = require('fs');
-            // const decodedData = Buffer.from(rows[7].data, 'base64');
-            // output_file_path = "/home/<user>/catkin_ws/src/ROS-dashboard-backend/map.pgm";
-            // fs.writeFile(output_file_path, decodedData, (err) => {
-            //     if (err) {throw err;}
-            //     console.log('The pgm file has been saved!');
-            // });
-
             res.status(200).json({success: true, data: rows});
         }
         else {
@@ -159,19 +139,10 @@ app.get('/api/pgm_data', (req, res) => {
     })
 });
 
+// Get YAML Map Metadata API
 app.get('/api/yaml_data', (req, res) => {
     conn.query('SELECT file_name, modified_time, file_type, file_size FROM yaml_data', (err, rows, fields) => {
         if (!err) {
-            // save yaml data to file, change file path accordingly
-            // const yaml = require('js-yaml');
-            // const parsedYaml = yaml.load(rows[1].data, 'utf8');
-            // var fs = require('fs');
-            // output_file_path = "/home/<user>/catkin_ws/src/ROS-dashboard-backend/map.yaml";
-            // fs.writeFile(output_file_path, yaml.dump(parsedYaml, { indent: 2 }), (err) => {
-            //     if (err) {throw err;}
-            //     console.log('The yaml file has been saved!');
-            // });
-
             res.status(200).json({success: true, data: rows});
         }
         else {
@@ -180,4 +151,40 @@ app.get('/api/yaml_data', (req, res) => {
     })
 });
 
-app.listen(PORT,"0.0.0.0", () => console.log(`ROS Dashboard API is running at 0.0.0.0:${PORT}`));
+// DELETE PGM Map API
+app.delete('/api/pgm_data', (req, res) => {
+    const {map_name} = req.body;
+    conn.query('DELETE FROM pgm_data WHERE map_name = ?', [map_name], (err, rows, fields) => {
+        if (!err) {
+            if (rows.affectedRows !== 0) {
+                res.status(200).json({success: true, msg: `${map_name} map data deleted successfully`});
+            } 
+            else {
+                res.status(404).json({success: false, msg: `${map_name} map data not found`});
+            }
+        }
+        else {
+            res.status(500).json({success: false, msg: "Internal Server Error"});
+        }
+    });
+});
+
+// DELETE YAML Map Metadata API
+app.delete('/api/yaml_data', (req, res) => {
+    const {map_name} = req.body;
+    conn.query('DELETE FROM yaml_data WHERE file_name = ?', [map_name], (err, rows, field) => {
+        if (!err) {
+            if (rows.affectedRows !== 0) {
+                res.status(200).json({success: true, msg: `${map_name} map metadata deleted successfully`});
+            }
+            else {
+                res.status(404).json({success: false, msg: `${map_name} map metadata not found`});
+            }
+        }
+        else {
+            res.status(500).json({success: false, msg: "Internal Server Error"});
+        }
+    });      
+});
+
+app.listen(PORT,"0.0.0.0", () => console.log(`ROS Dashboard Backend API is running at 0.0.0.0:${PORT}`));
