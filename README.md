@@ -58,20 +58,30 @@ host: "localhost",
 user: "root",
 password: "root",
 database : "ROS_DB"
+
+# Fill the folder path for maps (example)
+const map_path = '/home/itbdelabo/catkin_ws/src/ROS-dashboard-backend/map'
+
+# save and exit
+ctrl + s
+ctrl + x
 ```
+
 7. Install dependencies (Node.js v18.18.2)
 ```bash
 cd ~/catkin_ws/src/ROS-dashboard-backend
 npm install
 ```
 
-8. Run
+8. Install mysql folder monitor to synchronize map folder with database. Follow this step: https://github.com/itbdelaboprogramming/mysql-folder-monitor
+
+9. Run
 ```bash
 cd ~/catkin_ws
 roslaunch ros_dashboard_backend ros_dashboard_backend.launch
 ```
 
-9. The app will run at all interfaces (0.0.0.0) on port 5000.
+10. The app will run at all interfaces (0.0.0.0) on port 5000.
 
 ## Postman
 Postman collection and environment filees are provided to test the HTTP REST API using Postman. Please import the files to Postman. Please also update the postman files whenever there are changes in the API.
