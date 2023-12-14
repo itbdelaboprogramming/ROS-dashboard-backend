@@ -8,6 +8,8 @@ const PORT = process.env.PORT || 5000;
 const rosnodejs = require('rosnodejs');
 const { exec, spawn } = require('child_process');
 var psTree = require('ps-tree');
+const fs = require('fs');
+const yaml = require('js-yaml');
 
 rosnodejs.initNode('/backend_node');
 const SetMapping = rosnodejs.require('slam_itbdelabo').srv.SetMapping;
@@ -198,31 +200,41 @@ app.get('/api/yaml_data', (req, res) => {
 // Edit PGM Map Data API
 app.put('/api/pgm_data', (req, res) => {
     const {map_name, new_map_name} = req.body;
-    conn.query('UPDATE pgm_data SET map_name = ? WHERE map_name = ?', [new_map_name, map_name], (err, rows, fields) =>{
+    pgm_file = map_name
+    yaml_file = map_name.replace('.pgm', '.yaml');
+    new_pgm_file = new_map_name
+    new_yaml_file = new_map_name.replace('.pgm', '.yaml');
+    try{
+        fs.renameSync(`${map_path}/${pgm_file}`, `${map_path}/${new_pgm_file}`);
+        fs.renameSync(`${map_path}/${yaml_file}`, `${map_path}/${new_yaml_file}`);
+    }
+    catch(err){
+        res.status(404).json({success: false, msg: "Map not found"});
+    }
+    const yaml_data = fs.readFileSync(`${map_path}/${new_yaml_file}`, 'utf8');
+    var yaml_json = yaml.load(yaml_data);
+    yaml_json.image = `${map_path}/${new_pgm_file}`;
+    const new_yaml_data = yaml.dump(yaml_json);
+    fs.writeFileSync(`${map_path}/${new_yaml_file}`, new_yaml_data, 'utf8');
+    conn.query('UPDATE pgm_data SET map_name = ? WHERE map_name = ?', [new_pgm_file, pgm_file], (err, rows, fields) =>{
         if (!err) {
             if (rows.affectedRows !== 0) {
-                res.status(200).json({success: true, msg: `${map_name} map data updated successfully`});
+                conn.query('UPDATE yaml_data SET file_name = ? WHERE file_name = ?', [new_yaml_file, yaml_file], (err, rows, fields) =>{
+                    if (!err) {
+                        if (rows.affectedRows !== 0) {
+                            res.status(200).json({success: true, msg: `${map_name} map data updated successfully`});
+                        }
+                        else {
+                            res.status(404).json({success: false, msg: `${map_name} yaml map metadata not found`});
+                        }
+                    }
+                    else {
+                        res.status(500).json({success: false, msg: "Internal Server Error"});
+                    }
+                })
             }
             else {
-                res.status(404).json({success: false, msg: `${map_name} map data not found`});
-            }
-        }
-        else {
-            res.status(500).json({success: false, msg: "Internal Server Error"});
-        }
-    })
-});
-
-// Edit YAML Map Metadata API
-app.put('/api/yaml_data', (req, res) => {
-    const {map_name, new_map_name} = req.body;
-    conn.query('UPDATE yaml_data SET file_name = ? WHERE file_name = ?', [new_map_name, map_name], (err, rows, fields) =>{
-        if (!err) {
-            if (rows.affectedRows !== 0) {
-                res.status(200).json({success: true, msg: `${map_name} map metadata updated successfully`});
-            }
-            else {
-                res.status(404).json({success: false, msg: `${map_name} map metadata not found`});
+                res.status(404).json({success: false, msg: `${map_name} pgm map data not found`});
             }
         }
         else {
