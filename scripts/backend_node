@@ -195,6 +195,42 @@ app.get('/api/yaml_data', (req, res) => {
     })
 });
 
+// Edit PGM Map Data API
+app.put('/api/pgm_data', (req, res) => {
+    const {map_name, new_map_name} = req.body;
+    conn.query('UPDATE pgm_data SET map_name = ? WHERE map_name = ?', [new_map_name, map_name], (err, rows, fields) =>{
+        if (!err) {
+            if (rows.affectedRows !== 0) {
+                res.status(200).json({success: true, msg: `${map_name} map data updated successfully`});
+            }
+            else {
+                res.status(404).json({success: false, msg: `${map_name} map data not found`});
+            }
+        }
+        else {
+            res.status(500).json({success: false, msg: "Internal Server Error"});
+        }
+    })
+});
+
+// Edit YAML Map Metadata API
+app.put('/api/yaml_data', (req, res) => {
+    const {map_name, new_map_name} = req.body;
+    conn.query('UPDATE yaml_data SET file_name = ? WHERE file_name = ?', [new_map_name, map_name], (err, rows, fields) =>{
+        if (!err) {
+            if (rows.affectedRows !== 0) {
+                res.status(200).json({success: true, msg: `${map_name} map metadata updated successfully`});
+            }
+            else {
+                res.status(404).json({success: false, msg: `${map_name} map metadata not found`});
+            }
+        }
+        else {
+            res.status(500).json({success: false, msg: "Internal Server Error"});
+        }
+    });
+});
+
 // DELETE PGM Map API
 app.delete('/api/pgm_data', (req, res) => {
     const {map_name} = req.body;

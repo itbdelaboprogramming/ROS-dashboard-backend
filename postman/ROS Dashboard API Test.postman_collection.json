@@ -209,6 +209,64 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Rename PGM Map Data API",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"map_name\" : \"2023-12-13_11-19-42.pgm\",\n    \"new_map_name\": \"2023-12-13_11-19-41.pgm\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/pgm_data",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"pgm_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Rename YAML Map Metadata API",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"map_name\" : \"2023-12-13_11-19-42.yaml\",\n    \"new_map_name\": \"2023-12-13_11-19-41.yaml\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/yaml_data",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"api",
+						"yaml_data"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
