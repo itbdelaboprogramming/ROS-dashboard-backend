@@ -6,37 +6,31 @@ const app = express();
 var mysql = require('mysql');
 const PORT = process.env.PORT || 5000;
 const rosnodejs = require('rosnodejs');
-const { exec, spawn } = require('child_process');
+const {spawn} = require('child_process');
 var psTree = require('ps-tree');
 const fs = require('fs');
 const yaml = require('js-yaml');
 const mqtt = require('mqtt');
 
 rosnodejs.initNode('/backend_node');
-const SetMapping = rosnodejs.require('slam_itbdelabo').srv.SetMapping;
-const SetOwnMap = rosnodejs.require('slam_itbdelabo').srv.SetOwnMap;
-const std_msgs = rosnodejs.require('std_msgs').msg;
 const nh = rosnodejs.nh;
 
-let roslaunch_child = undefined;
 let map_saver_child = undefined;
 let map_server_child = undefined;
 
-let setMappingSrv = nh.serviceClient('/set_mapping', 'slam_itbdelabo/SetMapping');
-
 var conn = mysql.createConnection({
-    host: "",
-    user: "",
-    password: "",
-    database : ""
+    host: "localhost",
+    user: "root",
+    password: "root",
+    database : "ROS_DB"
   });
   
   conn.connect(function(err) {
     if (err) throw err;
     rosnodejs.log.info("Connected to MySQL Database");
 });
-const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
-const mqtt_client = mqtt.connect('mqtt://<broker_ip>');
+const map_path = '/home/farrel/catkin_ws/src/ROS-dashboard-backend/map'
+const mqtt_client = mqtt.connect('mqtt://192.168.18.180');
 mqtt_client.on('connect', () => {
     rosnodejs.log.info("Connected to MQTT Broker");
 });
@@ -81,27 +75,6 @@ app.post('/api/mapping', (req, res) => {
             console.log(`child process exited with code ${code}`);
         });
     }
-    // let setMappingReq = new SetMapping.Request();
-    // setMappingReq.start = start, setMappingReq.pause = pause, setMappingReq.stop = stop;
-    // setMappingSrv.call(setMappingReq).then((setMappingRes) => {
-    //     if (setMappingRes.success) {
-    //         res.status(200).json({ success: true, msg: "Mapping request success"});
-    //     }
-    //     else {
-    //         if (setMappingRes.code === 1) {
-    //             res.status(503).json({success: false, msg: "/map topic is not available"})
-    //         }
-    //         else if (setMappingRes.code === 2){
-    //             res.status(400).json({success: false, msg: "Invalid request, only one action can be set"});
-    //         }
-    //         else if (setMappingRes.code === 3){
-    //             res.status(504).json({success: false, msg: "Map failed to save"})
-    //         }
-    //         else {
-    //             res.status(500).json({success: false, msg: "Internal server error"})
-    //         }
-    //     }
-    // });
     if (start) {
         mqtt_client.publish('/mapping', "1");
     }
@@ -122,43 +95,13 @@ app.post('/api/lidar', (req, res) => {
         use_own_map: use_own_map
     }
     mqtt_client.publish('/lidar', JSON.stringify(jsonData));
-    res.status(200).json({success: true, msg: "Lidar enabled"});
-    // if (enable) {
-    //     let commandToExecute = '';
-    //     if (enable && !use_own_map) {
-    //         commandToExecute = 'roslaunch slam_itbdelabo compute_slam.launch';
-    //     }
-    //     else if (enable && use_own_map) {
-    //         commandToExecute = 'roslaunch slam_itbdelabo compute_slam.launch use_own_map:=true';
-    //     }
-    //     roslaunch_child = spawn(commandToExecute, {shell: true});
-
-    //     roslaunch_child.stdout.on('data', (data) => {
-    //         console.log(`${data}`);
-    //     });
-        
-    //     roslaunch_child.stderr.on('data', (data) => {
-    //         console.error(`${data}`);
-    //     });
-
-    //     roslaunch_child.on('close', (code) => {
-    //         console.log(`child process exited with code ${code}`);
-    //     });
-        
-    //     res.status(200).json({success: true, msg: "Lidar enabled"});
-    // }
-    // else {
-    //     if (roslaunch_child === undefined) {
-    //         res.status(200).json({success: true, msg: "Lidar disabled"});
-    //     }
-    //     else {
-    //         psTree(roslaunch_child.pid, function (err, children) {
-    //             spawn('kill', ['-9'].concat(children.map(function (p) { return p.PID })));
-    //         });
-    //         res.status(200).json({success: true, msg: "Lidar disabled"});
-    //     }
-    // }
-})
+    if (enable) {
+        res.status(200).json({success: true, msg: "Lidar enabled"});
+    }
+    else {
+        res.status(200).json({success: true, msg: "Lidar disabled"});
+    }
+});
 
 // Set Own Map API
 app.post('/api/set_own_map', (req, res) => {
