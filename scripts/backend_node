@@ -18,21 +18,27 @@ const nh = rosnodejs.nh;
 let map_saver_child = undefined;
 let map_server_child = undefined;
 
+// Config
+const mysql_host = ""
+const mysql_user = ""
+const mysql_password = ""
+const mysql_database = ""
+const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
+const mqtt_broker_ip = "192.168.18.180"
+
 var conn = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "root",
-    database : "ROS_DB"
+    host: mysql_host,
+    user: mysql_user,
+    password: mysql_password,
+    database : mysql_database
   });
-  
   conn.connect(function(err) {
     if (err) throw err;
-    rosnodejs.log.info("Connected to MySQL Database");
+    rosnodejs.log.info(`Connected to MySQL Database at ${mysql_host}`);
 });
-const map_path = '/home/farrel/catkin_ws/src/ROS-dashboard-backend/map'
-const mqtt_client = mqtt.connect('mqtt://192.168.18.180');
+const mqtt_client = mqtt.connect(`mqtt://${mqtt_broker_ip}`);
 mqtt_client.on('connect', () => {
-    rosnodejs.log.info("Connected to MQTT Broker");
+    rosnodejs.log.info(`Connected to MQTT Broker at ${mqtt_broker_ip}`);
 });
   
 app.use(bodyParser.json());
