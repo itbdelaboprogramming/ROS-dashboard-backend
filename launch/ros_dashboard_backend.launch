@@ -1,3 +1,4 @@
 <launch>
+    <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch" />
     <node pkg="ros_dashboard_backend" type="backend_node" name="backend_node" output="screen" respawn="true"> </node>
 </launch>
