@@ -25,6 +25,7 @@ const mysql_password = ""
 const mysql_database = ""
 const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
 const mqtt_broker_ip = "192.168.18.180"
+const timezone = 7;     // UTC+(timezone)
 
 var conn = mysql.createConnection({
     host: mysql_host,
@@ -67,6 +68,7 @@ app.post('/api/mapping', (req, res) => {
         mqtt_client.publish('/mapping', "3");
         const ts = Date.now();
         const date_ob = new Date(ts);
+        date_ob.setTime(date_ob.getTime() + (date_ob.getTimezoneOffset()*60*1000) + (timezone*60*60*1000));
         const year = date_ob.getFullYear();
         const month = date_ob.getMonth() + 1;
         const date = date_ob.getDate();
