@@ -148,6 +148,13 @@ app.post('/api/set_own_map', (req, res) => {
 app.get('/api/pgm_data', (req, res) => {
     conn.query('SELECT map_name, modified_time, file_type, file_size FROM pgm_data', (err, rows, fields) => {
         if (!err) {
+            rows = rows.map((row) => {
+                if (row.modified_time instanceof Date) {
+                    row.created_time = row.created_time.toISOString().replace('Z', '');
+                    row.modified_time = row.modified_time.toISOString().replace('Z', '');
+                }
+                return row;
+            });
             res.status(200).json({success: true, data: rows});
         }
         else {
@@ -160,6 +167,13 @@ app.get('/api/pgm_data', (req, res) => {
 app.get('/api/yaml_data', (req, res) => {
     conn.query('SELECT file_name, modified_time, file_type, file_size FROM yaml_data', (err, rows, fields) => {
         if (!err) {
+            rows = rows.map((row) => {
+                if (row.modified_time instanceof Date) {
+                    row.created_time = row.created_time.toISOString().replace('Z', '');
+                    row.modified_time = row.modified_time.toISOString().replace('Z', '');
+                }
+                return row;
+            });
             res.status(200).json({success: true, data: rows});
         }
         else {
