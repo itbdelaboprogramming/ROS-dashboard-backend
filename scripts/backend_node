@@ -205,10 +205,13 @@ app.put('/api/pgm_data', (req, res) => {
     yaml_json.image = `${map_path}/${new_pgm_file}`;
     const new_yaml_data = yaml.dump(yaml_json);
     fs.writeFileSync(`${map_path}/${new_yaml_file}`, new_yaml_data, 'utf8');
-    conn.query('UPDATE pgm_data SET map_name = ? WHERE map_name = ?', [new_pgm_file, pgm_file], (err, rows, fields) =>{
+    const ts = Date.now();
+    const new_date = new Date(ts);
+    new_date.setTime(new_date.getTime() + (new_date.getTimezoneOffset()*60*1000) + (timezone*60*60*1000));
+    conn.query('UPDATE pgm_data SET map_name = ?, modified_time = ? WHERE map_name = ?', [new_pgm_file, new_date, pgm_file], (err, rows, fields) =>{
         if (!err) {
             if (rows.affectedRows !== 0) {
-                conn.query('UPDATE yaml_data SET file_name = ? WHERE file_name = ?', [new_yaml_file, yaml_file], (err, rows, fields) =>{
+                conn.query('UPDATE yaml_data SET file_name = ?, modified_time = ? WHERE file_name = ?', [new_yaml_file, new_date, yaml_file], (err, rows, fields) =>{
                     if (!err) {
                         if (rows.affectedRows !== 0) {
                             res.status(200).json({success: true, msg: `${map_name} map data updated successfully`});
