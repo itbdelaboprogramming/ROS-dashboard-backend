@@ -61,7 +61,7 @@ const mysql_password = ""
 const mysql_database = ""
 const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
 const mqtt_broker_ip = ""
-const timezone = 7;     // UTC+(timezone)
+const timezone = 7;     // UTC+(timezone), change according to your timezone
 
 # save and exit
 ctrl + s
