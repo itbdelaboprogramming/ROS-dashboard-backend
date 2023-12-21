@@ -49,18 +49,19 @@ mysql -u root -p
 # enter root password, in this case from previous step is 'root'
 # copy all the commands from sql/init.sql ONE BY ONE separated by ";" (without quotes)
 ```
-6. Fill MySQL authentication
+6. Fill all configs
 ```bash
 cd ~/catkin_ws/src/ROS-dashboard-backend/scripts
 nano backend_node
-# Fill the MySQL authentication
-host: "localhost",
-user: "root",
-password: "root",
-database : "ROS_DB"
 
-# Fill the folder path for maps (example)
-const map_path = '/home/itbdelabo/catkin_ws/src/ROS-dashboard-backend/map'
+# Fill all configs
+const mysql_host = ""
+const mysql_user = ""
+const mysql_password = ""
+const mysql_database = ""
+const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
+const mqtt_broker_ip = ""
+const timezone = 7;     // UTC+(timezone)
 
 # save and exit
 ctrl + s
@@ -81,7 +82,7 @@ cd ~/catkin_ws
 roslaunch ros_dashboard_backend ros_dashboard_backend.launch
 ```
 
-10. The app will run at all interfaces (0.0.0.0) on port 5000.
+10. The app will run at all network interfaces (0.0.0.0) on port 5000.
 
 ## Postman
 Postman collection and environment filees are provided to test the HTTP REST API using Postman. Please import the files to Postman. Please also update the postman files whenever there are changes in the API.

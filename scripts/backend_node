@@ -24,7 +24,7 @@ const mysql_user = ""
 const mysql_password = ""
 const mysql_database = ""
 const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
-const mqtt_broker_ip = "192.168.18.180"
+const mqtt_broker_ip = ""
 const timezone = 7;     // UTC+(timezone)
 
 var conn = mysql.createConnection({
