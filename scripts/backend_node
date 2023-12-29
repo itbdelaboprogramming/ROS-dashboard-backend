@@ -27,16 +27,13 @@ const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
 const mqtt_broker_ip = ""
 const timezone = 7;     // UTC+(timezone), change according to your timezone
 
-var conn = mysql.createConnection({
+var pool = mysql.createPool({
     host: mysql_host,
     user: mysql_user,
     password: mysql_password,
     database : mysql_database
-  });
-  conn.connect(function(err) {
-    if (err) throw err;
-    rosnodejs.log.info(`Connected to MySQL Database at ${mysql_host}`);
 });
+
 const mqtt_client = mqtt.connect(`mqtt://${mqtt_broker_ip}`);
 mqtt_client.on('connect', () => {
     rosnodejs.log.info(`Connected to MQTT Broker at ${mqtt_broker_ip}`);
@@ -146,7 +143,7 @@ app.post('/api/set_own_map', (req, res) => {
 
 // Get PGM Map Data API
 app.get('/api/pgm_data', (req, res) => {
-    conn.query('SELECT map_name, modified_time, file_type, file_size FROM pgm_data', (err, rows, fields) => {
+    pool.query('SELECT map_name, modified_time, file_type, file_size FROM pgm_data', (err, rows, fields) => {
         if (!err) {
             rows = rows.map((row) => {
                 if (row.created_time instanceof Date) {
@@ -167,7 +164,7 @@ app.get('/api/pgm_data', (req, res) => {
 
 // Get YAML Map Metadata API
 app.get('/api/yaml_data', (req, res) => {
-    conn.query('SELECT file_name, modified_time, file_type, file_size FROM yaml_data', (err, rows, fields) => {
+    pool.query('SELECT file_name, modified_time, file_type, file_size FROM yaml_data', (err, rows, fields) => {
         if (!err) {
             rows = rows.map((row) => {
                 if (row.created_time instanceof Date) {
@@ -208,10 +205,10 @@ app.put('/api/pgm_data', (req, res) => {
     const ts = Date.now();
     const new_date = new Date(ts);
     new_date.setTime(new_date.getTime() + (new_date.getTimezoneOffset()*60*1000) + (timezone*60*60*1000));
-    conn.query('UPDATE pgm_data SET map_name = ?, modified_time = ? WHERE map_name = ?', [new_pgm_file, new_date, pgm_file], (err, rows, fields) =>{
+    pool.query('UPDATE pgm_data SET map_name = ?, modified_time = ? WHERE map_name = ?', [new_pgm_file, new_date, pgm_file], (err, rows, fields) =>{
         if (!err) {
             if (rows.affectedRows !== 0) {
-                conn.query('UPDATE yaml_data SET file_name = ?, modified_time = ? WHERE file_name = ?', [new_yaml_file, new_date, yaml_file], (err, rows, fields) =>{
+                pool.query('UPDATE yaml_data SET file_name = ?, modified_time = ? WHERE file_name = ?', [new_yaml_file, new_date, yaml_file], (err, rows, fields) =>{
                     if (!err) {
                         if (rows.affectedRows !== 0) {
                             res.status(200).json({success: true, msg: `${map_name} map data updated successfully`});
@@ -238,7 +235,7 @@ app.put('/api/pgm_data', (req, res) => {
 // DELETE PGM Map API
 app.delete('/api/pgm_data', (req, res) => {
     const {map_name} = req.body;
-    conn.query('DELETE FROM pgm_data WHERE map_name = ?', [map_name], (err, rows, fields) => {
+    pool.query('DELETE FROM pgm_data WHERE map_name = ?', [map_name], (err, rows, fields) => {
         if (!err) {
             if (rows.affectedRows !== 0) {
                 res.status(200).json({success: true, msg: `${map_name} map data deleted successfully`});
@@ -256,7 +253,7 @@ app.delete('/api/pgm_data', (req, res) => {
 // DELETE YAML Map Metadata API
 app.delete('/api/yaml_data', (req, res) => {
     const {map_name} = req.body;
-    conn.query('DELETE FROM yaml_data WHERE file_name = ?', [map_name], (err, rows, field) => {
+    pool.query('DELETE FROM yaml_data WHERE file_name = ?', [map_name], (err, rows, field) => {
         if (!err) {
             if (rows.affectedRows !== 0) {
                 res.status(200).json({success: true, msg: `${map_name} map metadata deleted successfully`});
