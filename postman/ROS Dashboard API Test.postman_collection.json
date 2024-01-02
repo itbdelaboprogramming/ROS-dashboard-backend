@@ -217,7 +217,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"map_name\" : \"2023-12-13_11-19-41.pgm\",\n    \"new_map_name\": \"2023-12-13_11-19-42.pgm\"\n}",
+					"raw": "{\n    \"map_name\" : \"2023-12-13_11-15-16.pgm\",\n    \"new_map_name\": \"2023-12-13_11-15-17.pgm\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -234,6 +234,64 @@
 					"path": [
 						"api",
 						"pgm_data"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Register API",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"itbdelabo\", \n    \"unit_id\": \"Unit A\",\n    \"email\" : \"itbdelabo@mail.com\", \n    \"owner_name\" : \"ITB de Labo\", \n    \"password\": \"itbdelabo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/auth/register",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"auth",
+						"register"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Login API",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"itbdelabo\", \n    \"unit_id\": \"Unit A\",\n    \"password\": \"itbdelabo\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/auth/login",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"auth",
+						"login"
 					]
 				}
 			},

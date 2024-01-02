@@ -11,6 +11,8 @@ var psTree = require('ps-tree');
 const fs = require('fs');
 const yaml = require('js-yaml');
 const mqtt = require('mqtt');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 rosnodejs.initNode('/backend_node');
 const nh = rosnodejs.nh;
@@ -27,6 +29,7 @@ const mysql_database = process.env.MYSQL_DATABASE;
 const map_path = process.env.MAP_PATH;
 const mqtt_broker_ip = process.env.MQTT_BROKER_IP;
 const timezone = process.env.TIMEZONE;
+const jwt_secret_key = process.env.JWT_SECRET_KEY;
 
 var pool = mysql.createPool({
     host: mysql_host,
@@ -50,6 +53,47 @@ app.use(cors({
 app.get('/', (req, res) => {
     res.status(200).json({ success: true, data: "ROS Dashboard Backend API"});
 });
+
+// Register API
+app.post('/auth/register', async (req, res) => {
+    const {username, unit_id, email, owner_name, password} = req.body;
+    var hashed_password = await bcrypt.hash(password, 10);
+    const query = 'INSERT INTO user (username, unit_id, email, owner_name, password) VALUES (?, ?, ?, ?, ?)';
+    pool.query(query, [username, unit_id, email, owner_name, hashed_password], (err, rows, fields) => {
+        if (!err) {
+            res.status(201).json({ success: true, msg: "Register success"});
+        }
+        else {
+            res.status(500).json({ success: false, msg: "Internal Server Error"});
+        }
+    })
+});
+
+// Login API
+app.post('/auth/login', async (req, res) => {
+    const {username, unit_id, password} = req.body;
+    const query = 'SELECT * FROM user WHERE username = ? AND unit_id = ?';
+    pool.query(query, [username, unit_id], async (err, rows, fields) => {
+        if (!err) {
+            if (rows.length === 0) {
+                res.status(401).json({success: false, msg: "Wrong username or unit id or password"});
+            } 
+            else {
+                const match = await bcrypt.compare(password, rows[0].password);
+                if (match) {
+                    const token = jwt.sign({username: username, unit_id: unit_id}, jwt_secret_key, {expiresIn: '3h'});
+                    res.status(200).json({success: true, msg: "Login success", token: token});
+                }
+                else {
+                    res.status(401).json({success: false, msg: "Wrong username or unit id or password"});
+                }
+            }
+        }
+        else {
+            res.status(500).json({ success: false, msg: "Internal Server Error"});
+        }
+    });
+})
 
 // Set Mapping API (Start, Pause, Stop)
 app.post('/api/mapping', (req, res) => {
