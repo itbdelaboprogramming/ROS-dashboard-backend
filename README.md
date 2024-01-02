@@ -49,19 +49,20 @@ mysql -u root -p
 # enter root password, in this case from previous step is 'root'
 # copy all the commands from sql/init.sql ONE BY ONE separated by ";" (without quotes)
 ```
-6. Fill all configs
+6. Fill all configs in .env file
 ```bash
 cd ~/catkin_ws/src/ROS-dashboard-backend/scripts
-nano backend_node
+cp .env.template .env
+nano .env
 
 # Fill all configs
-const mysql_host = ""
-const mysql_user = ""
-const mysql_password = ""
-const mysql_database = ""
-const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
-const mqtt_broker_ip = ""
-const timezone = 7;     // UTC+(timezone), change according to your timezone
+MYSQL_HOST=""
+MYSQL_USER=""
+MYSQL_PASSWORD=""
+MYSQL_DATABASE=""
+MAP_PATH="/home/<pc_user_here>/catkin_ws/src/ROS-dashboard-backend/map"
+MQTT_BROKER_IP=""
+TIMEZONE=7          # UTC+(timezone), change according to your timezone
 
 # save and exit
 ctrl + s

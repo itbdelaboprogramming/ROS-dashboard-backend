@@ -19,13 +19,14 @@ let map_saver_child = undefined;
 let map_server_child = undefined;
 
 // Config
-const mysql_host = ""
-const mysql_user = ""
-const mysql_password = ""
-const mysql_database = ""
-const map_path = '/home/<user>/catkin_ws/src/ROS-dashboard-backend/map'
-const mqtt_broker_ip = ""
-const timezone = 7;     // UTC+(timezone), change according to your timezone
+require('dotenv').config({path: `${__dirname}/.env`})
+const mysql_host = process.env.MYSQL_HOST;
+const mysql_user = process.env.MYSQL_USER;
+const mysql_password = process.env.MYSQL_PASSWORD;
+const mysql_database = process.env.MYSQL_DATABASE;
+const map_path = process.env.MAP_PATH;
+const mqtt_broker_ip = process.env.MQTT_BROKER_IP;
+const timezone = process.env.TIMEZONE;
 
 var pool = mysql.createPool({
     host: mysql_host,
