@@ -49,9 +49,25 @@ app.use(cors({
     origin: '*'
 }));
 
+// Middleware JWT (JSON Web Token)
+const verifyToken = (req, res, next) => {
+    const bearerToken = req.headers['authorization'];
+    const token = bearerToken.split(' ')[1];
+    if (token) {
+        const decoded = jwt.verify(token, jwt_secret_key);
+        req.username = decoded.username;
+        req.unit_id = decoded.unit_id;
+        req.owner_name = decoded.owner_name;
+        next();
+    }
+    else {
+        res.status(401).json({success: false, msg: "Access denied"});
+    }
+}
+
 // Home API
-app.get('/', (req, res) => {
-    res.status(200).json({ success: true, data: "ROS Dashboard Backend API"});
+app.get('/', verifyToken, (req, res) => {
+    res.status(200).json({ success: true, data: `Welcome to ROS Dashboard Backend API, user: ${req.username}, with unit id: ${req.unit_id}, owned by: ${req.owner_name}`});
 });
 
 // Register API
@@ -81,7 +97,7 @@ app.post('/auth/login', async (req, res) => {
             else {
                 const match = await bcrypt.compare(password, rows[0].password);
                 if (match) {
-                    const token = jwt.sign({username: username, unit_id: unit_id}, jwt_secret_key, {expiresIn: '3h'});
+                    const token = jwt.sign({username: username, unit_id: unit_id, owner_name: rows[0].owner_name}, jwt_secret_key, {expiresIn: '3h'});
                     res.status(200).json({success: true, msg: "Login success", token: token});
                 }
                 else {

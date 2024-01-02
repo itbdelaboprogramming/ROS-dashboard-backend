@@ -10,7 +10,13 @@
 			"name": "Home Page API",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer ",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://{{ROS_BACKEND_URL}}:5000",
 					"protocol": "http",
