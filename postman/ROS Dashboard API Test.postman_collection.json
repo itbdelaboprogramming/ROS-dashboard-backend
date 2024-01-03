@@ -2,6 +2,7 @@
 	"info": {
 		"_postman_id": "1feb49bb-0949-4d2b-bb98-e2c9ef94609f",
 		"name": "ROS Dashboard API Test",
+		"description": "Postman API Documentation for ROS Dashboard Backend",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "29751539"
 	},
@@ -246,13 +247,13 @@
 			"response": []
 		},
 		{
-			"name": "Register API",
+			"name": "Register User API",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\" : \"itbdelabo\", \n    \"unit_id\": \"Unit A\",\n    \"email\" : \"itbdelabo@mail.com\", \n    \"owner_name\" : \"ITB de Labo\", \n    \"password\": \"itbdelabo\"\n}",
+					"raw": "{\n    \"username\" : \"itbdelabo\", \n    \"email\" : \"itbdelabo@mail.com\", \n    \"full_name\" : \"ITB de Labo\", \n    \"password\": \"itbdelabo\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -275,13 +276,13 @@
 			"response": []
 		},
 		{
-			"name": "Login API",
+			"name": "Login User API",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\" : \"itbdelabo\", \n    \"unit_id\": \"Unit A\",\n    \"password\": \"itbdelabo\"\n}",
+					"raw": "{\n    \"username\" : \"itbdelabo\", \n    \"password\": \"itbdelabo\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -56,53 +56,67 @@ const verifyToken = (req, res, next) => {
     if (token) {
         const decoded = jwt.verify(token, jwt_secret_key);
         req.username = decoded.username;
-        req.unit_id = decoded.unit_id;
-        req.owner_name = decoded.owner_name;
+        req.full_name = decoded.full_name;
         next();
     }
     else {
-        res.status(401).json({success: false, msg: "Access denied"});
+        res.status(401).json({success: false, msg: "Unauthorized"});
     }
 }
 
 // Home API
 app.get('/', verifyToken, (req, res) => {
-    res.status(200).json({ success: true, data: `Welcome to ROS Dashboard Backend API, user: ${req.username}, with unit id: ${req.unit_id}, owned by: ${req.owner_name}`});
+    res.status(200).json({ success: true, data: `Welcome to ROS Dashboard Backend API, username: ${req.username}, full name: ${req.full_name}`});
 });
 
 // Register API
 app.post('/auth/register', async (req, res) => {
-    const {username, unit_id, email, owner_name, password} = req.body;
+    const {username, email, full_name, password} = req.body;
     var hashed_password = await bcrypt.hash(password, 10);
-    const query = 'INSERT INTO user (username, unit_id, email, owner_name, password) VALUES (?, ?, ?, ?, ?)';
-    pool.query(query, [username, unit_id, email, owner_name, hashed_password], (err, rows, fields) => {
+    const check_username_query = 'SELECT * FROM user WHERE username = ?';
+    pool.query(check_username_query, [username], (err, rows, fields) => {
         if (!err) {
-            res.status(201).json({ success: true, msg: "Register success"});
+            if (rows.length === 0) {
+                const query = 'INSERT INTO user (username, email, full_name, password) VALUES (?, ?, ?, ?)';
+                pool.query(query, [username, email, full_name, hashed_password], (err, rows, fields) => {
+                    if (!err) {
+                        res.status(201).json({ success: true, msg: "Register success"});
+                    }
+                    else {
+                        res.status(500).json({ success: false, msg: "Internal Server Error"});
+                    }
+                });
+            }
+            else {
+                res.status(409).json({ success: false, msg: "Username already exist"});
+            }
         }
         else {
-            res.status(500).json({ success: false, msg: "Internal Server Error"});
+            res.status(500).json({ success: false, msg: "Internal Server Error"})
         }
-    })
+    });
 });
 
 // Login API
 app.post('/auth/login', async (req, res) => {
-    const {username, unit_id, password} = req.body;
-    const query = 'SELECT * FROM user WHERE username = ? AND unit_id = ?';
-    pool.query(query, [username, unit_id], async (err, rows, fields) => {
+    const {username, password} = req.body;
+    const query = 'SELECT * FROM user WHERE username = ?';
+    pool.query(query, [username], async (err, rows, fields) => {
         if (!err) {
-            if (rows.length === 0) {
-                res.status(401).json({success: false, msg: "Wrong username or unit id or password"});
-            } 
-            else {
-                const match = await bcrypt.compare(password, rows[0].password);
+            if (rows.length !== 0) {
+                const full_name = rows[0].full_name;
+                const user_password = rows[0].password;
+                const match = await bcrypt.compare(password, user_password);
                 if (match) {
-                    const token = jwt.sign({username: username, unit_id: unit_id, owner_name: rows[0].owner_name}, jwt_secret_key, {expiresIn: '3h'});
+                    const token = jwt.sign({username: username, full_name: full_name}, jwt_secret_key, {expiresIn: '3h'});
                     res.status(200).json({success: true, msg: "Login success", token: token});
                 }
                 else {
                     res.status(401).json({success: false, msg: "Wrong username or unit id or password"});
                 }
+            } 
+            else {
+                res.status(401).json({success: false, msg: "Wrong username or unit id or password"});
             }
         }
         else {
