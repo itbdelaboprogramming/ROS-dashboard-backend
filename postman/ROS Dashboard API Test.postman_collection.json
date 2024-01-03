@@ -247,7 +247,7 @@
 			"response": []
 		},
 		{
-			"name": "Register User API",
+			"name": "User Register API",
 			"request": {
 				"method": "POST",
 				"header": [],
@@ -261,14 +261,14 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/auth/register",
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/user/register",
 					"protocol": "http",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
 					"port": "5000",
 					"path": [
-						"auth",
+						"user",
 						"register"
 					]
 				}
@@ -276,13 +276,13 @@
 			"response": []
 		},
 		{
-			"name": "Login User API",
+			"name": "User Login API",
 			"request": {
 				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\" : \"itbdelabo\", \n    \"password\": \"itbdelabo\"\n}",
+					"raw": "{\n    \"username\" : \"itbdelabo\", \n    \"password\" : \"itbdelabo\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -290,15 +290,50 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/auth/login",
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/user/login",
 					"protocol": "http",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
 					"port": "5000",
 					"path": [
-						"auth",
+						"user",
 						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Unit Register API",
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer ",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"unit_name\" : \"Unit A\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/unit/register",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"unit",
+						"register"
 					]
 				}
 			},

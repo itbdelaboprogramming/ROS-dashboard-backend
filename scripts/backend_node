@@ -52,9 +52,10 @@ app.use(cors({
 // Middleware JWT (JSON Web Token)
 const verifyToken = (req, res, next) => {
     const bearerToken = req.headers['authorization'];
-    const token = bearerToken.split(' ')[1];
+    const token = bearerToken ? bearerToken.split(' ')[1] : undefined;
     if (token) {
         const decoded = jwt.verify(token, jwt_secret_key);
+        req.user_id = decoded.user_id;
         req.username = decoded.username;
         req.full_name = decoded.full_name;
         next();
@@ -69,8 +70,8 @@ app.get('/', verifyToken, (req, res) => {
     res.status(200).json({ success: true, data: `Welcome to ROS Dashboard Backend API, username: ${req.username}, full name: ${req.full_name}`});
 });
 
-// Register API
-app.post('/auth/register', async (req, res) => {
+// User Register API
+app.post('/user/register', async (req, res) => {
     const {username, email, full_name, password} = req.body;
     var hashed_password = await bcrypt.hash(password, 10);
     const check_username_query = 'SELECT * FROM user WHERE username = ?';
@@ -80,7 +81,7 @@ app.post('/auth/register', async (req, res) => {
                 const query = 'INSERT INTO user (username, email, full_name, password) VALUES (?, ?, ?, ?)';
                 pool.query(query, [username, email, full_name, hashed_password], (err, rows, fields) => {
                     if (!err) {
-                        res.status(201).json({ success: true, msg: "Register success"});
+                        res.status(201).json({ success: true, msg: "Register user success"});
                     }
                     else {
                         res.status(500).json({ success: false, msg: "Internal Server Error"});
@@ -97,19 +98,20 @@ app.post('/auth/register', async (req, res) => {
     });
 });
 
-// Login API
-app.post('/auth/login', async (req, res) => {
+// User Login API
+app.post('/user/login', async (req, res) => {
     const {username, password} = req.body;
     const query = 'SELECT * FROM user WHERE username = ?';
     pool.query(query, [username], async (err, rows, fields) => {
         if (!err) {
             if (rows.length !== 0) {
-                const full_name = rows[0].full_name;
+                const user_id = rows[0].id;
                 const user_password = rows[0].password;
+                const full_name = rows[0].full_name;
                 const match = await bcrypt.compare(password, user_password);
                 if (match) {
-                    const token = jwt.sign({username: username, full_name: full_name}, jwt_secret_key, {expiresIn: '3h'});
-                    res.status(200).json({success: true, msg: "Login success", token: token});
+                    const token = jwt.sign({user_id: user_id, username: username, full_name: full_name}, jwt_secret_key, {expiresIn: '3h'});
+                    res.status(200).json({success: true, msg: "Login user success", token: token});
                 }
                 else {
                     res.status(401).json({success: false, msg: "Wrong username or unit id or password"});
@@ -123,6 +125,34 @@ app.post('/auth/login', async (req, res) => {
             res.status(500).json({ success: false, msg: "Internal Server Error"});
         }
     });
+})
+
+// Unit Register API
+app.post('/unit/register', verifyToken, async (req, res) => {
+    const {unit_name} = req.body;
+    const user_id = req.user_id;
+    const check_unit_query = 'SELECT * FROM unit WHERE unit_name = ? AND user_id = ?';
+    pool.query(check_unit_query, [unit_name, user_id], (err, rows, fields) => {
+        if (!err) {
+            if (rows.length === 0) {
+                const query = 'INSERT INTO unit (unit_name, user_id) VALUES (?, ?)';
+                pool.query(query, [unit_name, user_id], (err, rows, fields) => {
+                    if (!err) {
+                        res.status(201).json({ success: true, msg: "Register unit success"});
+                    }
+                    else {
+                        res.status(500).json({ success: false, msg: "Internal Server Error"});
+                    }
+                });
+            }
+            else {
+                res.status(409).json({ success: false, msg: "Unit already exist"});
+            }
+        }
+        else {
+            res.status(500).json({ success: false, msg: "Internal Server Error"});
+        }
+    })
 })
 
 // Set Mapping API (Start, Pause, Stop)
