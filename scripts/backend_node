@@ -186,11 +186,11 @@ app.post('/api/mapping', (req, res) => {
         const date_ob = new Date(ts);
         date_ob.setTime(date_ob.getTime() + (date_ob.getTimezoneOffset()*60*1000) + (timezone*60*60*1000));
         const year = date_ob.getFullYear();
-        const month = date_ob.getMonth() + 1;
-        const date = date_ob.getDate();
-        const hours = date_ob.getHours();
-        const minutes = date_ob.getMinutes();
-        const seconds = date_ob.getSeconds();
+        const month = String(date_ob.getMonth() + 1).padStart(2, '0');
+        const date = String(date_ob.getDate()).padStart(2, '0');
+        const hours = String(date_ob.getHours()).padStart(2, '0');
+        const minutes = String(date_ob.getMinutes()).padStart(2, '0');
+        const seconds = String(date_ob.getSeconds()).padStart(2, '0');
         const map_name = `${year}-${month}-${date}_${hours}-${minutes}-${seconds}`;
         const commandToExecute = `rosrun map_server map_saver -f ${map_path}/${map_name}`;
         map_saver_child = spawn(commandToExecute, {shell: true});
