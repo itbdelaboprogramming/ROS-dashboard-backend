@@ -155,6 +155,20 @@ app.post('/unit/register', verifyToken, async (req, res) => {
     })
 })
 
+// Get All Unit API
+app.get('/unit/all', verifyToken, (req, res) => {
+    const user_id = req.user_id;
+    const query = 'SELECT * FROM unit WHERE user_id = ?';
+    pool.query(query, [user_id], (err, rows, fields) => {
+        if (!err) {
+            res.status(200).json({ success: true, data: rows});
+        }
+        else {
+            res.status(500).json({ success: false, msg: "Internal Server Error"});
+        }
+    })
+});
+
 // Set Mapping API (Start, Pause, Stop)
 app.post('/api/mapping', (req, res) => {
     const {start, pause, stop} = req.body;

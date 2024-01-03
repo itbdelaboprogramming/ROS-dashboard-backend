@@ -338,6 +338,32 @@
 				}
 			},
 			"response": []
+		},
+		{
+			"name": "Unit Get All API",
+			"request": {
+				"method": "GET",
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer ",
+						"type": "text"
+					}
+				],
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/unit/all",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"unit",
+						"all"
+					]
+				}
+			},
+			"response": []
 		}
 	]
 }
