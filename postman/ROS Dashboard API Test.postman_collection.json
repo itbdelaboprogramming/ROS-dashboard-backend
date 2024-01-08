@@ -305,6 +305,64 @@
 			"response": []
 		},
 		{
+			"name": "Check Username API",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"username\" : \"itbdelabo2\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/user/check-username",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"user",
+						"check-username"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Check Email API",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"email\" : \"itbdelabo2@mail.com\"\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://{{ROS_BACKEND_URL}}:5000/user/check-email",
+					"protocol": "http",
+					"host": [
+						"{{ROS_BACKEND_URL}}"
+					],
+					"port": "5000",
+					"path": [
+						"user",
+						"check-email"
+					]
+				}
+			},
+			"response": []
+		},
+		{
 			"name": "Unit Register API",
 			"request": {
 				"method": "POST",
