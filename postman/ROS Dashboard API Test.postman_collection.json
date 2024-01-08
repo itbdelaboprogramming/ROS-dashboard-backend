@@ -19,12 +19,13 @@
 					}
 				],
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000"
+					"path": [
+						""
+					]
 				}
 			},
 			"response": []
@@ -44,12 +45,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/mapping",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/api/mapping",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"mapping"
@@ -70,12 +69,10 @@
 					}
 				],
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/pgm_data",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/api/pgm_data",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"pgm_data"
@@ -96,12 +93,10 @@
 					}
 				],
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/yaml_data",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/api/yaml_data",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"yaml_data"
@@ -112,11 +107,8 @@
 		},
 		{
 			"name": "Set LIDAR API",
-			"protocolProfileBehavior": {
-				"disableBodyPruning": true
-			},
 			"request": {
-				"method": "GET",
+				"method": "POST",
 				"header": [],
 				"body": {
 					"mode": "raw",
@@ -128,12 +120,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/lidar",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/api/lidar",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"lidar"
@@ -157,12 +147,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/set_own_map",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/api/set_own_map",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"set_own_map"
@@ -192,12 +180,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/pgm_data",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/api/pgm_data",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"pgm_data"
@@ -227,12 +213,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/yaml_data",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/api/yaml_data",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"yaml_data"
@@ -262,12 +246,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/pgm_data",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/api/pgm_data",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"api",
 						"pgm_data"
@@ -291,12 +273,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/user/register",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/user/register",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"user",
 						"register"
@@ -320,12 +300,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/user/login",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/user/login",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"user",
 						"login"
@@ -349,12 +327,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/user/check-username",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/user/check-username",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"user",
 						"check-username"
@@ -378,12 +354,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/user/check-email",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/user/check-email",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"user",
 						"check-email"
@@ -413,12 +387,10 @@
 					}
 				},
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/unit/register",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/unit/register",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"unit",
 						"register"
@@ -439,12 +411,10 @@
 					}
 				],
 				"url": {
-					"raw": "http://{{ROS_BACKEND_URL}}:5000/unit/all",
-					"protocol": "http",
+					"raw": "{{ROS_BACKEND_URL}}/unit/all",
 					"host": [
 						"{{ROS_BACKEND_URL}}"
 					],
-					"port": "5000",
 					"path": [
 						"unit",
 						"all"
