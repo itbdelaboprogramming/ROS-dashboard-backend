@@ -62,7 +62,13 @@
 			"name": "Get All PGM Map Data",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer ",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/pgm_data",
 					"protocol": "http",
@@ -82,7 +88,13 @@
 			"name": "Get All YAML Map Metadata",
 			"request": {
 				"method": "GET",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer ",
+						"type": "text"
+					}
+				],
 				"url": {
 					"raw": "http://{{ROS_BACKEND_URL}}:5000/api/yaml_data",
 					"protocol": "http",
@@ -163,7 +175,13 @@
 			"name": "Delete PGM Map Data API",
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer ",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"map_name\": \"2023-12-06_10-12-50.pgm\"\n}",
@@ -192,7 +210,13 @@
 			"name": "Delete YAML Map Metadata API",
 			"request": {
 				"method": "DELETE",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer ",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"map_name\": \"2023-12-06_10-12-50.yaml\"\n}",
@@ -221,7 +245,13 @@
 			"name": "Rename PGM Map Data API",
 			"request": {
 				"method": "PUT",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer ",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"map_name\" : \"2023-12-13_11-15-16.pgm\",\n    \"new_map_name\": \"2023-12-13_11-15-17.pgm\"\n}",
@@ -282,7 +312,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"username\" : \"itbdelabo\", \n    \"password\" : \"itbdelabo\"\n}",
+					"raw": "{\n    \"username\" : \"itbdelabo\",\n    \"password\" : \"itbdelabo\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"

@@ -296,7 +296,7 @@ app.post('/api/set_own_map', (req, res) => {
 })
 
 // Get PGM Map Data API
-app.get('/api/pgm_data', (req, res) => {
+app.get('/api/pgm_data', verifyToken, (req, res) => {
     pool.query('SELECT map_name, modified_time, file_type, file_size FROM pgm_data', (err, rows, fields) => {
         if (!err) {
             rows = rows.map((row) => {
@@ -317,7 +317,7 @@ app.get('/api/pgm_data', (req, res) => {
 });
 
 // Get YAML Map Metadata API
-app.get('/api/yaml_data', (req, res) => {
+app.get('/api/yaml_data', verifyToken, (req, res) => {
     pool.query('SELECT file_name, modified_time, file_type, file_size FROM yaml_data', (err, rows, fields) => {
         if (!err) {
             rows = rows.map((row) => {
@@ -338,7 +338,7 @@ app.get('/api/yaml_data', (req, res) => {
 });
 
 // Edit PGM Map Data API
-app.put('/api/pgm_data', (req, res) => {
+app.put('/api/pgm_data', verifyToken, (req, res) => {
     const {map_name, new_map_name} = req.body;
     pgm_file = map_name
     yaml_file = map_name.replace('.pgm', '.yaml');
@@ -387,7 +387,7 @@ app.put('/api/pgm_data', (req, res) => {
 });
 
 // DELETE PGM Map API
-app.delete('/api/pgm_data', (req, res) => {
+app.delete('/api/pgm_data', verifyToken, (req, res) => {
     const {map_name} = req.body;
     pool.query('DELETE FROM pgm_data WHERE map_name = ?', [map_name], (err, rows, fields) => {
         if (!err) {
@@ -405,7 +405,7 @@ app.delete('/api/pgm_data', (req, res) => {
 });
 
 // DELETE YAML Map Metadata API
-app.delete('/api/yaml_data', (req, res) => {
+app.delete('/api/yaml_data', verifyToken, (req, res) => {
     const {map_name} = req.body;
     pool.query('DELETE FROM yaml_data WHERE file_name = ?', [map_name], (err, rows, field) => {
         if (!err) {
