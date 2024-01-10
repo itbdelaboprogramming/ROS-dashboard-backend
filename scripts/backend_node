@@ -207,6 +207,7 @@ app.get('/unit/all', verifyToken, (req, res) => {
 // Set Mapping API (Start, Pause, Stop)
 app.post('/api/mapping', verifyToken, (req, res) => {
     const {start, pause, stop} = req.body;
+    const user_id = req.user_id;
     if (start) {
         mqtt_client.publish('/mapping', "1");
         res.status(200).json({ success: true, msg: "Mapping request success"});
@@ -226,7 +227,7 @@ app.post('/api/mapping', verifyToken, (req, res) => {
         const hours = String(date_ob.getHours()).padStart(2, '0');
         const minutes = String(date_ob.getMinutes()).padStart(2, '0');
         const seconds = String(date_ob.getSeconds()).padStart(2, '0');
-        const map_name = `${year}-${month}-${date}_${hours}-${minutes}-${seconds}`;
+        const map_name = `${user_id}_${year}-${month}-${date}_${hours}-${minutes}-${seconds}`;
         const commandToExecute = `rosrun map_server map_saver -f ${map_path}/${map_name}`;
         map_saver_child = spawn(commandToExecute, {shell: true});
 
@@ -297,7 +298,8 @@ app.post('/api/set_own_map', verifyToken, (req, res) => {
 
 // Get PGM Map Data API
 app.get('/api/pgm_data', verifyToken, (req, res) => {
-    pool.query('SELECT map_name, modified_time, file_type, file_size FROM pgm_data', (err, rows, fields) => {
+    const user_id = req.user_id;
+    pool.query('SELECT map_name, modified_time, file_type, file_size FROM pgm_data WHERE user_id = ?', [user_id], (err, rows, fields) => {
         if (!err) {
             rows = rows.map((row) => {
                 if (row.created_time instanceof Date) {
@@ -318,7 +320,8 @@ app.get('/api/pgm_data', verifyToken, (req, res) => {
 
 // Get YAML Map Metadata API
 app.get('/api/yaml_data', verifyToken, (req, res) => {
-    pool.query('SELECT file_name, modified_time, file_type, file_size FROM yaml_data', (err, rows, fields) => {
+    const user_id = req.user_id;
+    pool.query('SELECT file_name, modified_time, file_type, file_size FROM yaml_data WHERE user_id = ?', [user_id], (err, rows, fields) => {
         if (!err) {
             rows = rows.map((row) => {
                 if (row.created_time instanceof Date) {
