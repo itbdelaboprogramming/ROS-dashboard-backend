@@ -34,7 +34,13 @@
 			"name": "Set Mapping API",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"start\" : true,\n    \"pause\" : false,\n    \"stop\" : false\n}",
@@ -109,7 +115,13 @@
 			"name": "Set LIDAR API",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"enable\": true,\n    \"use_own_map\": false\n}",
@@ -136,7 +148,13 @@
 			"name": "Set Own Map API",
 			"request": {
 				"method": "POST",
-				"header": [],
+				"header": [
+					{
+						"key": "Authorization",
+						"value": "Bearer",
+						"type": "text"
+					}
+				],
 				"body": {
 					"mode": "raw",
 					"raw": "{\n    \"enable\": true,\n    \"map_name\": \"2023-12-06_10-12-50.pgm\"\n}",

@@ -205,7 +205,7 @@ app.get('/unit/all', verifyToken, (req, res) => {
 });
 
 // Set Mapping API (Start, Pause, Stop)
-app.post('/api/mapping', (req, res) => {
+app.post('/api/mapping', verifyToken, (req, res) => {
     const {start, pause, stop} = req.body;
     if (start) {
         mqtt_client.publish('/mapping', "1");
@@ -246,7 +246,7 @@ app.post('/api/mapping', (req, res) => {
 })
 
 // LIDAR API (Enable, Disable)
-app.post('/api/lidar', (req, res) => {
+app.post('/api/lidar', verifyToken, (req, res) => {
     const {enable, use_own_map} = req.body;
     const jsonData = {
         enable: enable,
@@ -262,7 +262,7 @@ app.post('/api/lidar', (req, res) => {
 });
 
 // Set Own Map API
-app.post('/api/set_own_map', (req, res) => {
+app.post('/api/set_own_map', verifyToken, (req, res) => {
     const {enable, map_name} = req.body;
     if (enable) {
         const yaml_file = map_name.replace('.pgm', '.yaml');
