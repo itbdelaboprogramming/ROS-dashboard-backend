@@ -206,18 +206,20 @@ app.get('/unit/all', verifyToken, (req, res) => {
 
 // Set Mapping API (Start, Pause, Stop)
 app.post('/api/mapping', verifyToken, (req, res) => {
-    const {start, pause, stop} = req.body;
+    const {start, pause, stop, unit_name} = req.body;
     const user_id = req.user_id;
+    const username = req.username;
+    const mqtt_topic = `${username}/${unit_name}/mapping`;
     if (start) {
-        mqtt_client.publish('/mapping', "1");
+        mqtt_client.publish(mqtt_topic, "1");
         res.status(200).json({ success: true, msg: "Mapping request success"});
     }
     else if (pause) {
-        mqtt_client.publish('/mapping', "2");
+        mqtt_client.publish(mqtt_topic, "2");
         res.status(200).json({ success: true, msg: "Mapping request success"});
     } 
     else if (stop) {
-        mqtt_client.publish('/mapping', "3");
+        mqtt_client.publish(mqtt_topic, "3");
         const ts = Date.now();
         const date_ob = new Date(ts);
         date_ob.setTime(date_ob.getTime() + (date_ob.getTimezoneOffset()*60*1000) + (timezone*60*60*1000));
@@ -248,12 +250,13 @@ app.post('/api/mapping', verifyToken, (req, res) => {
 
 // LIDAR API (Enable, Disable)
 app.post('/api/lidar', verifyToken, (req, res) => {
-    const {enable, use_own_map} = req.body;
+    const {enable, use_own_map, unit_name} = req.body;
+    const username = req.username;
     const jsonData = {
         enable: enable,
         use_own_map: use_own_map
     }
-    mqtt_client.publish('/lidar', JSON.stringify(jsonData));
+    mqtt_client.publish(`${username}/${unit_name}/lidar`, JSON.stringify(jsonData));
     if (enable) {
         res.status(200).json({success: true, msg: "Lidar enabled"});
     }

@@ -37,13 +37,13 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer",
+						"value": "Bearer ",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"start\" : true,\n    \"pause\" : false,\n    \"stop\" : false\n}",
+					"raw": "{\n    \"start\" : true,\n    \"pause\" : false,\n    \"stop\" : false,\n    \"unit_name\": \"Unit A\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -118,13 +118,13 @@
 				"header": [
 					{
 						"key": "Authorization",
-						"value": "Bearer",
+						"value": "Bearer ",
 						"type": "text"
 					}
 				],
 				"body": {
 					"mode": "raw",
-					"raw": "{\n    \"enable\": true,\n    \"use_own_map\": false\n}",
+					"raw": "{\n    \"enable\": true,\n    \"use_own_map\": false,\n    \"unit_name\": \"Unit A\"\n}",
 					"options": {
 						"raw": {
 							"language": "json"
