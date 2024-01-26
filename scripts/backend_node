@@ -166,28 +166,33 @@ app.post('/user/check-email', async (req, res) => {
 app.post('/unit/register', verifyToken, async (req, res) => {
     const {unit_name} = req.body;
     const user_id = req.user_id;
-    const check_unit_query = 'SELECT * FROM unit WHERE unit_name = ? AND user_id = ?';
-    pool.query(check_unit_query, [unit_name, user_id], (err, rows, fields) => {
-        if (!err) {
-            if (rows.length === 0) {
-                const query = 'INSERT INTO unit (unit_name, user_id) VALUES (?, ?)';
-                pool.query(query, [unit_name, user_id], (err, rows, fields) => {
-                    if (!err) {
-                        res.status(201).json({ success: true, msg: "Register unit success"});
-                    }
-                    else {
-                        res.status(500).json({ success: false, msg: "Internal Server Error"});
-                    }
-                });
+    if (unit_name === '') {
+        res.status(400).json({ success: false, msg: "Unit name cannot be empty"});
+    }
+    else {
+        const check_unit_query = 'SELECT * FROM unit WHERE unit_name = ? AND user_id = ?';
+        pool.query(check_unit_query, [unit_name, user_id], (err, rows, fields) => {
+            if (!err) {
+                if (rows.length === 0) {
+                    const query = 'INSERT INTO unit (unit_name, user_id) VALUES (?, ?)';
+                    pool.query(query, [unit_name, user_id], (err, rows, fields) => {
+                        if (!err) {
+                            res.status(201).json({ success: true, msg: "Register unit success"});
+                        }
+                        else {
+                            res.status(500).json({ success: false, msg: "Internal Server Error"});
+                        }
+                    });
+                }
+                else {
+                    res.status(409).json({ success: false, msg: "Unit already exist"});
+                }
             }
             else {
-                res.status(409).json({ success: false, msg: "Unit already exist"});
+                res.status(500).json({ success: false, msg: "Internal Server Error"});
             }
-        }
-        else {
-            res.status(500).json({ success: false, msg: "Internal Server Error"});
-        }
-    })
+        })
+    }
 })
 
 // Get All Unit API
