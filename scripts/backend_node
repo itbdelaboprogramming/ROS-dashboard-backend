@@ -55,11 +55,16 @@ const verifyToken = (req, res, next) => {
     const bearerToken = req.headers['authorization'];
     const token = bearerToken ? bearerToken.split(' ')[1] : undefined;
     if (token) {
-        const decoded = jwt.verify(token, jwt_secret_key);
-        req.user_id = decoded.user_id;
-        req.username = decoded.username;
-        req.full_name = decoded.full_name;
-        next();
+        try {
+            const decoded = jwt.verify(token, jwt_secret_key);
+            req.user_id = decoded.user_id;
+            req.username = decoded.username;
+            req.full_name = decoded.full_name;
+            next();
+        }
+        catch (err) {
+            res.status(401).json({success: false, msg: "Unauthorized"});
+        }
     }
     else {
         res.status(401).json({success: false, msg: "Unauthorized"});
