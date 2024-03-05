@@ -88,3 +88,6 @@ roslaunch ros_dashboard_backend ros_dashboard_backend.launch
 
 ## Postman
 Postman collection and environment filees are provided to test the HTTP REST API using Postman. Please import the files to Postman. Please also update the postman files whenever there are changes in the API.
+
+## Cloud Server Installation (Optional)
+There is a shell script to install required software on cloud VM in `/cloud/install.sh` file. The script is for Ubuntu 20.04 VM cloud server.
