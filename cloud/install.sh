@@ -62,8 +62,12 @@ cd ~
 sudo apt install -y nginx
 # next setup nginx port forwarding manually
 
+# Install MySQL Client to access DB
+sudo apt install -y mysql-client
+
 # Print manually config
 cd ~
+echo "Please set up ZeroTier Network ID manually"
 echo "Please set up MySQL Folder Monitor config manually"
 echo "Please set up Mosquitto Broker config manually"
 echo "Please set up frontend next ts config manually"
