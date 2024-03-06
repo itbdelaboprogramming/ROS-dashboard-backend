@@ -7,6 +7,7 @@ Backend service for ROS Dashboard. This service is responsible for handling HTTP
 
 2. Clone the repository. Please make sure that catkin_ws directory is already prepared. Also make sure Node.js is installed. Version that is used for development is v18.18.2. If there are issues, refer to this version (v18.18.2).
 ```bash
+sudo apt install -y ros-noetic-rosbridge-server
 cd ~/catkin_ws/src
 git clone https://github.com/itbdelaboprogramming/ROS-dashboard-backend.git
 cd ~/catkin_ws

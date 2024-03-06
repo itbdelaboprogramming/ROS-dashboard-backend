@@ -27,6 +27,7 @@ tmux send-keys "cd ~/catkin_ws" C-m
 tmux send-keys "catkin_make" C-m
 tmux send-keys 'echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc' C-m
 tmux send-keys "source ~/.bashrc" C-m
+tmux send-keys "sudo apt install -y ros-noetic-rosbridge-server" C-m
 tmux send-keys "exit" C-m
 
 # Install Folder Monitor to MySQL (Folder-MySQL Synchronizer)
@@ -54,6 +55,7 @@ tmux send-keys "cd ~" C-m
 tmux send-keys "git clone https://github.com/itbdelaboprogramming/ROS-dashboard-next-ts" C-m
 tmux send-keys "cd ~/ROS-dashboard-next-ts" C-m
 tmux send-keys "npm install" C-m
+tmux send-keys "npm install pm2 -g" C-m
 tmux send-keys "exit" C-m
 # next setup config manually
 
